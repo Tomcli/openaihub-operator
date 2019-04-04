@@ -5,7 +5,19 @@
 
 - name: download kubectl
   include: kubectl.yml
-  
+
+- name: Create OpenAIHub-API yaml from template
+  template:
+    src: openaihub-api.yaml.j2
+    dest: openaihub-api.yaml
+    mode: 0644
+
+- name: Create OpenAIHub-API service
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl apply -f openaihub-api.yaml
+
 - name: Create OpenAIHub-UI yaml from template
   template:
     src: openaihub-ui.yaml.j2

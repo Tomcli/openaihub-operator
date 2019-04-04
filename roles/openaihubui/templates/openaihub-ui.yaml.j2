@@ -3,41 +3,42 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: openaihub-ui
+    service: openaihub-ui
   name: openaihub-ui
-  namespace: {{ openaihub_ui.namespace }}
+  namespace: {{ openaihub.namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: openaihub-ui
+      service: openaihub-ui
   template:
     metadata:
       labels:
-        app: openaihub-ui
+        service: openaihub-ui
     spec:
       containers:
-      - image: kastentx/openaihub-ui
+      - image: docker.io/kastentx/openaihub-ui
         imagePullPolicy: IfNotPresent
         name: openaihub-ui
+        ports:
+        - containerPort: 3000
         env:
           - name: REACT_APP_API
-            value: {{ openaihub_ui.react_app_api }}
+            value: {{ openaihub.react_app_api }}
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: openaihub-ui
+    service: openaihub-ui
   name: openaihub-ui
-  namespace: {{ openaihub_ui.namespace }}
+  namespace: {{ openaihub.namespace }}
 spec:
   ports:
-  - nodePort: 
-    port: 8088
+  - port: 80
     protocol: TCP
-    targetPort: 8088
+    targetPort: 3000
   selector:
-    run: openaihub-ui
+    service: openaihub-ui
   type: NodePort
