@@ -1,0 +1,7 @@
+apiVersion: openaihub.ibm.com/v1alpha1
+kind: OpenAIHubUI
+metadata:
+  name: example-openaihubui
+spec:
+  # Add fields here
+  size: 3

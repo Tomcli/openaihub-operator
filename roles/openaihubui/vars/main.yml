@@ -1,0 +1,7 @@
+---
+# vars file for openaihubui
+# Kubectl version
+kubectl_version: "{{ lookup('env','KUBECTL_VERSION') | default('v1.13.4', true) }}"
+openaihub_ui:
+  namespace: "{{ meta.namespace | default('default', true) }}"
+  react_app_api: "{{ lookup('env','REACT_APP_API') | default('0.0.0.0', true) }}"

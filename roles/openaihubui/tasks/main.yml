@@ -1,0 +1,19 @@
+# tasks file for openaihubui
+- name: get PATH
+  shell: echo $PATH
+  register: path
+
+- name: download kubectl
+  include: kubectl.yml
+  
+- name: Create OpenAIHub-UI yaml from template
+  template:
+    src: openaihub-ui.yaml.j2
+    dest: openaihub-ui.yaml
+    mode: 0644
+
+- name: Create OpenAIHub-UI service
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl apply -f openaihub-ui.yaml
