@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   creationTimestamp: null
-  name: openaihub-ui-operator
+  name: openaihub-operator
 rules:
 - apiGroups:
   - ""
@@ -15,7 +15,7 @@ rules:
   - configmaps
   - secrets
   verbs:
-  - get
+  - '*'
 - apiGroups:
   - ""
   resources:
@@ -41,7 +41,7 @@ rules:
 - apiGroups:
   - apps
   resourceNames:
-  - openaihub-ui-operator
+  - openaihub-operator
   resources:
   - deployments/finalizers
   verbs:
@@ -50,5 +50,11 @@ rules:
   - openaihub.ibm.com
   resources:
   - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - extensions
+  resources:
+  - deployments
   verbs:
   - '*'

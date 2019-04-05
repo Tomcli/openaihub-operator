@@ -1,1 +1,1 @@
-# openaihub-ui-operator
+# openaihub-operator

@@ -1,4 +1,4 @@
-# tasks file for openaihubui
+# tasks file for openaihub
 - name: get PATH
   shell: echo $PATH
   register: path
