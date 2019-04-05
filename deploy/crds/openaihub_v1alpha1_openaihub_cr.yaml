@@ -1,7 +1,7 @@
 apiVersion: openaihub.ibm.com/v1alpha1
 kind: OpenAIHub
 metadata:
-  name: example-openaihub
+  name: openaihub-cr
 spec:
   # Add fields here
-  size: 3
+  size: 1
