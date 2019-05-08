@@ -22,9 +22,9 @@ spec:
     spec:
       containers:
       - name: openaihub-api-server
-        image: docker.io/ckadner/openaihub-api:0.1
+        image: {{ openaihub.api_image }}
         imagePullPolicy: IfNotPresent
-        name: openaihub-ui
+        name: openaihub-api
         ports:
         - containerPort: 8080
         env:

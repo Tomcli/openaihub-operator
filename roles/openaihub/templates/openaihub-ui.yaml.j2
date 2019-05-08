@@ -17,7 +17,7 @@ spec:
         service: openaihub-ui
     spec:
       containers:
-      - image: docker.io/kastentx/openaihub-ui
+      - image: {{ openaihub.ui_image }}
         imagePullPolicy: IfNotPresent
         name: openaihub-ui
         ports:
