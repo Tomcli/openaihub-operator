@@ -7,4 +7,4 @@ openaihub:
   namespace: "{{ meta.namespace | default('default', true) }}"
   react_app_api: "{{ lookup('env','REACT_APP_API') | default('0.0.0.0', true) }}"
   ui_image: "{{ lookup('env','UI_IMAGE') | default('docker.io/kastentx/openaihub-ui', true) }}"
-  api_image: "{{ lookup('env','API_IMAGE') | default('docker.io/ckadner/openaihub-api:0.1', true) }}"
+  api_image: "{{ lookup('env','API_IMAGE') | default('docker.io/ckadner/openaihub-api:0.3', true) }}"
