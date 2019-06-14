@@ -23,8 +23,14 @@ spec:
         ports:
         - containerPort: 3000
         env:
-          - name: REACT_APP_API
-            value: {{ openaihub.react_app_api }}
+        - name: REACT_APP_API
+          value: {{ openaihub.react_app_api }}
+        - name: REACT_APP_RUN
+          value: {{ openaihub.react_app_run }}
+        - name: REACT_APP_UPLOAD
+          value: {{ openaihub.react_app_upload }}
+        - name: REACT_APP_KFP
+          value: {{ openaihub.react_app_kfp }}
 
 ---
 apiVersion: v1
