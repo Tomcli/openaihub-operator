@@ -18,7 +18,7 @@ spec:
       labels:
         service: openaihub-api
         environment: dev
-        version: v0.1
+        version: v0.3
     spec:
       containers:
       - name: openaihub-api-server
@@ -28,24 +28,22 @@ spec:
         ports:
         - containerPort: 8080
         env:
-          - name: REACT_APP_API
-            value: {{ openaihub.react_app_api }}
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         resources:
           limits:
-            cpu: 50m
-            memory: 64Mi
+            cpu: 250m
+            memory: 256Mi
         livenessProbe:
           httpGet:
             path: /apis/v1alpha1/health_check?check_database=true&check_object_store=true
             port: 8080
-          initialDelaySeconds: 180
+          initialDelaySeconds: 120
           timeoutSeconds: 10
           periodSeconds: 60
-          failureThreshold: 5
+          failureThreshold: 3
 
 ---
 apiVersion: v1
