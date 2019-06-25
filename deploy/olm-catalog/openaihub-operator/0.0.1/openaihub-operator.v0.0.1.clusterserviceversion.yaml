@@ -91,7 +91,7 @@ spec:
                 - /usr/local/bin/ao-logs
                 - /tmp/ansible-operator/runner
                 - stdout
-                image: ffdlops/openaihub:v0.0.1
+                image: ffdlops/openaihub:v0.0.2
                 imagePullPolicy: Always
                 name: ansible
                 resources: {}
@@ -109,7 +109,7 @@ spec:
                   value: openaihub-operator
                 - name: REACT_APP_API
                   value: 169.63.38.242:32123
-                image: ffdlops/openaihub:v0.0.1
+                image: ffdlops/openaihub:v0.0.2
                 imagePullPolicy: Always
                 name: operator
                 resources: {}
