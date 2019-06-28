@@ -12,20 +12,63 @@
     dest: openaihub-api.yaml
     mode: 0644
 
+- name: Check whether API yaml exists
+  stat:
+    path: openaihub-api.yaml
+  register: api_stats
+
 - name: Create OpenAIHub-API service
   environment:
     PATH: "{{ path.stdout }}:/opt/ansible"
   shell: |
     kubectl apply -f openaihub-api.yaml
+  when: api_stats.stat.exists == False
+
+- name: wait for API service to be available
+  ignore_errors: yes
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl wait --for=condition=Available deployment/openaihub-api --timeout=300s
+  when: api_stats.stat.exists == False
+
+- name: Get node external ip
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    echo $(kubectl get node -o wide | grep Ready | awk '{ print $7;exit }')
+  register: node_ip
+
+  - name: Get ambassador service nodeport
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    echo $(kubectl get svc -n {{ openaihub.namespace }} |grep ambassador|awk '{ print $5;exit}'|cut -d':' -f2|cut -d'/' -f1)
+  register: kfp_node_port
+
+- name: Get API service nodeport
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    echo $(kubectl get svc -n {{ openaihub.namespace }} |grep openaihub-api|awk '{ print $5;exit}'|cut -d':' -f2|cut -d'/' -f1)
+  register: node_port
 
 - name: Create OpenAIHub-UI yaml from template
   template:
     src: openaihub-ui.yaml.j2
     dest: openaihub-ui.yaml
     mode: 0644
+  with_items:
+    - { react_app_api: "{{ node_ip.stdout }}:{{ node_port.stdout }}", react_app_kfp: "{{ node_ip.stdout }}:{{ kfp_node_port.stdout }}" }
+
+- name: Check whether UI yaml exists
+  stat:
+    path: openaihub-ui.yaml
+  register: ui_stats
 
 - name: Create OpenAIHub-UI service
   environment:
     PATH: "{{ path.stdout }}:/opt/ansible"
   shell: |
     kubectl apply -f openaihub-ui.yaml
+  when: ui_stats.stat.exists == False    
