@@ -28,6 +28,7 @@ spec:
           - events
           - configmaps
           - secrets
+          - nodes
           verbs:
           - '*'
         - apiGroups:
@@ -91,7 +92,7 @@ spec:
                 - /usr/local/bin/ao-logs
                 - /tmp/ansible-operator/runner
                 - stdout
-                image: ffdlops/openaihub:v0.0.2
+                image: ffdlops/openaihub:v0.0.3
                 imagePullPolicy: Always
                 name: ansible
                 resources: {}
@@ -107,9 +108,7 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: openaihub-operator
-                - name: REACT_APP_API
-                  value: 169.63.38.242:32123
-                image: ffdlops/openaihub:v0.0.2
+                image: ffdlops/openaihub:v0.0.3
                 imagePullPolicy: Always
                 name: operator
                 resources: {}

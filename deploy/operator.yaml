@@ -42,8 +42,6 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "openaihub-operator"
-            - name: REACT_APP_API
-              value: "169.63.38.242:32123"
       volumes:
         - name: runner
           emptyDir: {}
