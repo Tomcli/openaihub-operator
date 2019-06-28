@@ -12,9 +12,12 @@
     dest: openaihub-api.yaml
     mode: 0644
 
-- name: Check whether API yaml exists
-  stat:
-    path: openaihub-api.yaml
+- name: Check whether API deployment exists
+  ignore_errors: yes
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl get deployment/openaihub-api -n {{ openaihub.namespace }}
   register: api_stats
 
 - name: Create OpenAIHub-API service
@@ -22,7 +25,7 @@
     PATH: "{{ path.stdout }}:/opt/ansible"
   shell: |
     kubectl apply -f openaihub-api.yaml
-  when: api_stats.stat.exists == False
+  when: api_stats.rc != 0
 
 - name: wait for API service to be available
   ignore_errors: yes
@@ -39,7 +42,7 @@
     echo $(kubectl get node -o wide | grep Ready | awk '{ print $7;exit }')
   register: node_ip
 
-  - name: Get ambassador service nodeport
+- name: Get ambassador service nodeport
   environment:
     PATH: "{{ path.stdout }}:/opt/ansible"
   shell: |
@@ -61,9 +64,12 @@
   with_items:
     - { react_app_api: "{{ node_ip.stdout }}:{{ node_port.stdout }}", react_app_kfp: "{{ node_ip.stdout }}:{{ kfp_node_port.stdout }}" }
 
-- name: Check whether UI yaml exists
-  stat:
-    path: openaihub-ui.yaml
+- name: Check whether UI deployment exists
+  ignore_errors: yes
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl get deployment/openaihub-ui -n {{ openaihub.namespace }}
   register: ui_stats
 
 - name: Create OpenAIHub-UI service
@@ -71,4 +77,4 @@
     PATH: "{{ path.stdout }}:/opt/ansible"
   shell: |
     kubectl apply -f openaihub-ui.yaml
-  when: ui_stats.stat.exists == False    
+  when: ui_stats.rc != 0
