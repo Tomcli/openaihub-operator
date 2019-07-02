@@ -55,6 +55,13 @@
   shell: |
     echo $(kubectl get svc -n {{ openaihub.namespace }} |grep openaihub-api|awk '{ print $5;exit}'|cut -d':' -f2|cut -d'/' -f1)
   register: node_port
+  
+- name: Get NBViewer service nodeport
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    echo $(kubectl get svc -n {{ openaihub.namespace }} |grep nbviewer-enterprise|awk '{ print $5;exit}'|cut -d':' -f2|cut -d'/' -f1)
+  register: nbv_node_port
 
 - name: Create OpenAIHub-UI yaml from template
   template:
@@ -62,7 +69,7 @@
     dest: openaihub-ui.yaml
     mode: 0644
   with_items:
-    - { react_app_api: "{{ node_ip.stdout }}:{{ node_port.stdout }}", react_app_kfp: "{{ node_ip.stdout }}:{{ kfp_node_port.stdout }}" }
+    - { react_app_api: "{{ node_ip.stdout }}:{{ node_port.stdout }}", react_app_kfp: "{{ node_ip.stdout }}:{{ kfp_node_port.stdout }}", react_app_nbviewer_api: "{{ node_ip.stdout }}:{{ nbv_node_port.stdout }}" }
 
 - name: Check whether UI deployment exists
   ignore_errors: yes
