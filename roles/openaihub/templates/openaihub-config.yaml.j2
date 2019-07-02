@@ -1,0 +1,235 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openaihub-config
+  namespace: {{ openaihub.namespace }}
+data:
+  config.json: |
+    {
+      "pipelines":[
+        {
+          "name":"Train and deploy with Watson Machine Learning",
+          "description": "Train, store and deploy a Tensorflow model with MNIST handwritten dataset recognition on IBM Watson Machine Learning service.",
+          "source":"https://raw.githubusercontent.com/kubeflow/pipelines/master/samples/ibm-samples/watson/watson_train_serve_pipeline.py",
+          "annotations": {
+              "platform": "Watson ML"
+            }
+        },
+        {
+          "name":"Train and deploy with FfDL and Seldon (OSS)",
+          "description": "Train a model using Fabric for Deep Learning and deploy it with Seldon.",
+          "source":"https://raw.githubusercontent.com/kubeflow/pipelines/master/samples/ibm-samples/ffdl-seldon/ffdl_pipeline.py",
+          "annotations": {
+              "platform": "OpenSource"
+            }
+        },
+        {
+          "name":"Train with FfDL and canary deployment with Knative.",
+          "description": "Train a model, do fairness and robustness checks using AIF360 and ART, and canary deploy with Knative",
+          "source":"pipelines/pipeline-samples/knative/ffdl-canary-pipeline.py",
+          "annotations": {
+              "platform": "OpenSource"
+            }
+        },
+        {
+          "name":"Model analysis and operations using AI OpenScale",
+          "description": "Train a model using Spark, store with WML, and monitor and analyze deployed model with Watson OpenScale",
+          "source":"https://raw.githubusercontent.com/kubeflow/pipelines/master/samples/ibm-samples/openscale/openscale.py",
+          "annotations": {
+              "platform": "Watson OpenScale"
+            }
+        },
+        {
+          "name":"End-to-end pipeline with fairness and robustness test",
+          "description": "Train a model, do fairness and robustness checks, and deploy it with A/B testing.",
+          "source":"pipelines/pipeline-samples/knative/ffdl-e2e-condition-pipeline.py",
+          "annotations": {
+              "platform": "OpenSource"
+            }
+        },
+        {
+          "name":"Kubernetes model deployment",
+          "description": "Deploy a model container to Kuberentes as a service.",
+          "source":"pipelines/pipeline-samples/models/model-deploy-pipeline-k8s.py",
+          "annotations": {
+              "platform": "OpenSource"
+            }
+        },
+        {
+          "name":"Knative model deployment",
+          "description": "Deploy a model container to Knative with traffic splitting",
+          "source":"pipelines/pipeline-samples/models/model-deploy-pipeline-knative.py",
+          "annotations": {
+              "platform": "OpenSource"
+            }
+        }
+      ],
+      "components": [
+          {
+            "name": "Train Spark Model - IBM Cloud",
+            "source": "https://raw.githubusercontent.com/kubeflow/pipelines/master/components/ibm-components/spark/train_spark/component.yaml"
+          },
+          {
+            "name": "Serve PyTorch Model - Seldon Core",
+            "source": "https://raw.githubusercontent.com/kubeflow/pipelines/master/components/ibm-components/ffdl/serve/component.yaml"
+          },
+          {
+            "name": "Deploy Model - Watson Machine Learning",
+            "source": "https://raw.githubusercontent.com/kubeflow/pipelines/master/components/ibm-components/watson/deploy/component.yaml"
+          },
+          {
+            "name": "Train Model - Fabric for Deep Learning",
+            "source": "https://raw.githubusercontent.com/kubeflow/pipelines/master/components/ibm-components/ffdl/train/component.yaml"
+          },
+          {
+            "name": "Model Robustness Check - PyTorch",
+            "source": "components/component-samples/metrics/robustness_checker/component.yaml"
+          },
+          {
+            "name": "Model Fairness Check - PyTorch",
+            "source": "components/component-samples/metrics/bias_detector/component.yaml"
+          },
+          {
+            "name": "Deploy Model - Kubernetes",
+            "source": "components/component-samples/kubernetes/kube_deployment/component.yaml"
+          },
+          {
+            "name": "Deploy Model - Knative",
+            "source": "components/component-samples/knative/knative_container_deployment/component.yaml"
+          },
+          {
+            "name": "Subscribe - Watson OpenScale",
+            "source": "https://raw.githubusercontent.com/kubeflow/pipelines/master/components/ibm-components/watson/manage/subscribe/component.yaml"
+          },
+          {
+            "name": "Store model - Watson Machine Learning",
+            "source": "https://raw.githubusercontent.com/kubeflow/pipelines/master/components/ibm-components/watson/store/component.yaml"
+          }
+      ],
+      "models": [
+        {
+          "name": "MAX Audio Classifier",
+          "source": "models/samples/max-audio-classifier.yaml"
+        },
+        {
+          "name": "MAX Breast Cancer Mitosis Detector",
+          "source": "models/samples/max-breast-cancer-mitosis-detector.yaml"
+        },
+        {
+          "name": "MAX Facial Age Estimator",
+          "source": "models/samples/max-facial-age-estimator.yaml"
+        },
+        {
+          "name": "MAX Image Caption Generator",
+          "source": "models/samples/max-image-caption-generator.yaml"
+        },
+        {
+          "name": "Image Completer",
+          "source": "models/samples/image-completer.yaml"
+        },
+        {
+          "name": "MAX Image Segmenter",
+          "source": "models/samples/max-image-segmenter.yaml"
+        },
+        {
+          "name": "MAX News Text Generator",
+          "source": "models/samples/max-news-text-generator.yaml"
+        },
+        {
+          "name": "MAX Object Detector",
+          "source": "models/samples/max-object-detector.yaml"
+        },
+        {
+          "name": "MAX Sports Video Classifier",
+          "source": "models/samples/max-sports-video-classifier.yaml"
+        },
+        {
+          "name": "MAX Weather Forecaster",
+          "source": "models/samples/max-weather-forecaster.yaml"
+        }
+      ],
+      "operators": [
+        {
+          "name": "Pipelines Operator",
+          "source": "operators/pipelines-operator/olm/pipelines-operator.v0.0.1.clusterserviceversion.yaml"
+        },
+        {
+          "name": "FfDL Operator",
+          "source": "operators/ffdl-operator/olm/ffdl-operator.v0.0.1.clusterserviceversion.yaml"
+        },
+        {
+          "name": "Jupyterlab Operator",
+          "source": "operators/jupyterlab-operator/olm/jupyterlab-operator.v0.0.1.clusterserviceversion.yaml"
+        },
+        {
+          "name": "OpenAIHub Operator",
+          "source": "operators/openaihub-operator/olm/openaihub-operator.v0.0.1.clusterserviceversion.yaml"
+        },
+        {
+          "name": "KubeFlow Operator",
+          "source": "operators/kubeflow-operator/olm/kubeflow-operator.v0.0.1.clusterserviceversion.yaml"
+        },
+        {
+          "name": "Pachyderm Operator",
+          "source": "operators/pachyderm-operator/olm/pachyderm-operator.v0.0.1.clusterserviceversion.yaml"
+        },
+        {
+          "name": "Kiali Operator",
+          "source": "https://raw.githubusercontent.com/operator-framework/community-operators/master/upstream-community-operators/kiali/kiali.v0.18.1.clusterserviceversion.yaml"
+        },
+         {
+          "name": "Spark Operator",
+          "source": "https://raw.githubusercontent.com/operator-framework/community-operators/master/upstream-community-operators/spark-gcp/sparkoperator.2.4.0.clusterserviceversion.yaml"
+        },
+         {
+          "name": "Istio Operator",
+          "source": "https://raw.githubusercontent.com/operator-framework/community-operators/master/upstream-community-operators/istio/istio-operator.0.1.6.clusterserviceversion.yaml"
+        },
+         {
+          "name": "Knative Serving Operator",
+          "source": "https://raw.githubusercontent.com/operator-framework/community-operators/master/community-operators/knative-serving-operator/knative-serving-operator.v0.6.0.clusterserviceversion.yaml"
+        }
+      ],
+      "notebooks": [
+        {
+          "name": "AIF360 Gender Classification",
+          "source": ""
+        },
+        {
+          "name": "ART detector model",
+          "source": ""
+        },
+        {
+          "name": "ART poisoning attack",
+          "source": ""
+        },
+        {
+          "name": "ART with FfDL",
+          "source": ""
+        },
+        {
+          "name": "Train with FfDL and canary testing with Knative",
+          "source": ""
+        },
+        {
+          "name": "End-to-end pipeline with fairness and robustness test",
+          "source": ""
+        },
+        {
+          "name": "Watson OpenScale",
+          "source": ""
+        },
+         {
+          "name": "Watson OpenScale Walkthrough",
+          "source": ""
+        },
+         {
+          "name": "Train and deploy with FfDL and Seldon",
+          "source": ""
+        },
+         {
+          "name": "Train and deploy with Watson Machine Learning",
+          "source": ""
+        }
+      ]
+    }

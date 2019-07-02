@@ -27,6 +27,27 @@
     kubectl apply -f openaihub-api.yaml
   when: api_stats.rc != 0
 
+- name: Create NBViewer yaml from template
+  template:
+    src: nbviewer-enterprise.yaml.j2
+    dest: nbviewer-enterprise.yaml
+    mode: 0644
+
+- name: Check whether NBViewer deployment exists
+  ignore_errors: yes
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl get deployment/nbviewer-enterprise -n {{ openaihub.namespace }}
+  register: nbv_stats
+
+- name: Create NBViewer service
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl apply -f nbviewer-enterprise.yaml
+  when: nbv_stats.rc != 0
+
 - name: wait for API service to be available
   ignore_errors: yes
   environment:
@@ -55,7 +76,7 @@
   shell: |
     echo $(kubectl get svc -n {{ openaihub.namespace }} |grep openaihub-api|awk '{ print $5;exit}'|cut -d':' -f2|cut -d'/' -f1)
   register: node_port
-  
+
 - name: Get NBViewer service nodeport
   environment:
     PATH: "{{ path.stdout }}:/opt/ansible"
@@ -85,3 +106,45 @@
   shell: |
     kubectl apply -f openaihub-ui.yaml
   when: ui_stats.rc != 0
+
+- name: Create openaihub-config yaml from template
+  template:
+    src: openaihub-config.yaml.j2
+    dest: openaihub-config.yaml
+    mode: 0644
+
+- name: Check whether openaihub-config configmap exists
+  ignore_errors: yes
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl get configmap/openaihub-config -n {{ openaihub.namespace }}
+  register: config_stats
+
+- name: Create openaihub-config configmap
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl apply -f openaihub-config.yaml
+  when: config_stats.rc != 0
+
+- name: Create boostrapper yaml from template
+  template:
+    src: boostrapper.yaml.j2
+    dest: boostrapper.yaml
+    mode: 0644
+
+- name: Check whether boostrapper job exists
+  ignore_errors: yes
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl get job/boostrap -n {{ openaihub.namespace }}
+  register: boostrapper_stats
+
+- name: Create boostrapper job
+  environment:
+    PATH: "{{ path.stdout }}:/opt/ansible"
+  shell: |
+    kubectl apply -f boostrapper.yaml
+  when: boostrapper_stats.rc != 0

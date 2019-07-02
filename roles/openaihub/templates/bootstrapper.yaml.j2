@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: boostrap
+  namespace: {{ openaihub.namespace }}
+spec:
+  backoffLimit: 5
+  template:
+    spec:
+      containers:
+      - name: openaihub-boostrap
+        image: aipipeline/boostrap:latest
+        imagePullPolicy: Always
+        env:
+          - name: internal_github_raw_url
+            value: https://raw.github.ibm.com/OpenAIHub/openaihub/master/
+          - name: enterprise_github_token
+            value: {{ openaihub.github_token }}
+          - name: openaihub_api
+            value: openaihub-api
+        volumeMounts:
+          - name: openaihub-config
+            mountPath: /etc/config.json
+            subPath: config.json
+      restartPolicy: Never
+      volumes:
+        - name: openaihub-config
+          configMap:
+            name: openaihub-config
