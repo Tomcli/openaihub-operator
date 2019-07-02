@@ -9,6 +9,6 @@ openaihub:
   react_app_kfp: "{{ lookup('env','REACT_APP_KFP') | default('0.0.0.0', true) }}"
   react_app_run: "{{ lookup('env','REACT_APP_RUN') | default('\"true\"', true) }}"
   react_app_upload: "{{ lookup('env','REACT_APP_UPLOAD') | default('\"true\"', true) }}"
-  ui_image: "{{ lookup('env','UI_IMAGE') | default('docker.io/aipipeline/aiops-ui:v0.1.0-rc1', true) }}"
+  ui_image: "{{ lookup('env','UI_IMAGE') | default('docker.io/aipipeline/openaihub-ui:v0.1.0-rc1', true) }}"
   api_image: "{{ lookup('env','API_IMAGE') | default('docker.io/aipipeline/openaihub-api:v0.1.0-rc1', true) }}"
   github_token: "{{ lookup('env','GITHUB_IBM_TOKEN') | default('', true) }}"
